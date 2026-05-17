@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/login", "/signup", "/auth/", "/success"],
+        disallow: ["/dashboard", "/auth/", "/api/"],
       },
     ],
     sitemap: "https://studypilote.vercel.app/sitemap.xml",

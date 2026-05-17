@@ -264,6 +264,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
                   {isSignup ? "Connexion" : "Créer un compte gratuit"}
                 </Link>
               </p>
+
+              <p className="mt-2 text-center text-[11px] text-dim">
+                Curieux des tarifs ?{" "}
+                <Link href="/pricing" className="underline hover:text-muted transition-colors">
+                  Voir les offres
+                </Link>
+              </p>
             </>
           )}
         </div>

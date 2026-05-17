@@ -1,5 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Check, BookOpen } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Tarifs — StudyPilot",
+  description: "Commence gratuitement avec 10 documents. Upgrade à Pro pour un stockage et des messages illimités.",
+};
 
 const plans = [
   {
