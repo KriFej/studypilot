@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { createClient } from "@/lib/supabase/server";
+import { getUserPlan, getDocCount, PLAN_LIMITS } from "@/lib/limits";
 import type { GenerateResult } from "@/lib/types";
 
 export const maxDuration = 60;
@@ -19,15 +20,28 @@ Réponds UNIQUEMENT en JSON valide avec ce format exact:
 
 export async function POST(req: NextRequest) {
   try {
-    const { documentId, content, apiKey } = await req.json();
+    const { documentId, content } = await req.json();
 
-    if (!documentId || !content || !apiKey) {
+    if (!documentId || !content) {
       return NextResponse.json({ error: "Paramètres manquants" }, { status: 400 });
     }
 
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
+
+    // Vérification limite documents
+    const [plan, docCount] = await Promise.all([
+      getUserPlan(user.id),
+      getDocCount(user.id),
+    ]);
+    const docLimit = PLAN_LIMITS[plan].docs;
+    if (docCount >= docLimit) {
+      return NextResponse.json(
+        { error: "limit_docs", message: `Tu as atteint la limite de ${docLimit} documents. Passe à Pro pour continuer.` },
+        { status: 403 }
+      );
+    }
 
     const { data: doc } = await supabase
       .from("documents")
@@ -38,8 +52,7 @@ export async function POST(req: NextRequest) {
 
     if (!doc) return NextResponse.json({ error: "Document introuvable" }, { status: 404 });
 
-    const openai = new OpenAI({ apiKey });
-
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const truncated = content.slice(0, 12000);
 
     const completion = await openai.chat.completions.create({
@@ -71,20 +84,12 @@ export async function POST(req: NextRequest) {
       explanation: q.explanation ?? null,
     }));
 
-    if (flashcards.length > 0) {
-      await supabase.from("flashcards").insert(flashcards);
-    }
-    if (quizItems.length > 0) {
-      await supabase.from("quiz_questions").insert(quizItems);
-    }
+    if (flashcards.length > 0) await supabase.from("flashcards").insert(flashcards);
+    if (quizItems.length > 0) await supabase.from("quiz_questions").insert(quizItems);
 
     await supabase
       .from("documents")
-      .update({
-        summary: result.summary ?? null,
-        flashcard_count: flashcards.length,
-        quiz_count: quizItems.length,
-      })
+      .update({ summary: result.summary ?? null, flashcard_count: flashcards.length, quiz_count: quizItems.length })
       .eq("id", documentId);
 
     return NextResponse.json({ ok: true });

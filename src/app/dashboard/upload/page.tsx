@@ -2,7 +2,8 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, FileText, Loader2, AlertCircle } from "lucide-react";
+import { Upload, FileText, Loader2, AlertCircle, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 
@@ -19,17 +20,13 @@ export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const apiKey = typeof window !== "undefined" ? localStorage.getItem("sp-openai-key") : null;
+  const [limitReached, setLimitReached] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setLimitReached(false);
 
-    if (!apiKey) {
-      setError("Clé API OpenAI manquante. Configure-la dans les Paramètres.");
-      return;
-    }
     if (!title.trim()) {
       setError("Donne un titre à ce document.");
       return;
@@ -67,8 +64,20 @@ export default function UploadPage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentId: doc.id, content, apiKey }),
+        body: JSON.stringify({ documentId: doc.id, content }),
       });
+
+      if (res.status === 403) {
+        const json = await res.json();
+        if (json.error === "limit_docs") {
+          // Supprimer le doc inséré avant la vérification (race condition possible)
+          await supabase.from("documents").delete().eq("id", doc.id);
+          setLimitReached(true);
+          return;
+        }
+        throw new Error(json.message ?? "Erreur génération IA");
+      }
+
       if (!res.ok) throw new Error("Erreur génération IA");
 
       router.push(`/dashboard/document/${doc.id}`);
@@ -81,10 +90,30 @@ export default function UploadPage() {
 
   const tabClass = (t: Tab) =>
     `px-4 py-2 text-sm font-medium rounded-full transition-all ${
-      tab === t
-        ? "bg-primary-500 text-white"
-        : "text-muted hover:text-fg"
+      tab === t ? "bg-primary-500 text-white" : "text-muted hover:text-fg"
     }`;
+
+  if (limitReached) {
+    return (
+      <div className="p-6 md:p-8 max-w-2xl mx-auto">
+        <div className="rounded-3xl border border-accent-500/30 bg-accent-tint p-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-500/20 text-3xl">
+            📚
+          </div>
+          <h2 className="text-lg font-bold text-fg">Limite de 10 documents atteinte</h2>
+          <p className="mt-2 text-sm text-muted">
+            Tu as rempli ta bibliothèque gratuite. Passe à Pro pour continuer à apprendre sans limite.
+          </p>
+          <Link
+            href="/pricing"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-brand px-6 py-3 text-sm font-semibold text-white hover:opacity-90 transition-all"
+          >
+            Voir les offres <ArrowUpRight size={14} />
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-2xl mx-auto">
@@ -94,7 +123,6 @@ export default function UploadPage() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Title */}
         <div>
           <label className="mb-1.5 block text-xs font-medium text-muted">Titre du document</label>
           <input
@@ -107,13 +135,11 @@ export default function UploadPage() {
           />
         </div>
 
-        {/* Tabs */}
         <div className="flex gap-1 rounded-full border border-border bg-surface p-1 w-fit">
           <button type="button" className={tabClass("text")} onClick={() => setTab("text")}>Texte</button>
           <button type="button" className={tabClass("pdf")} onClick={() => setTab("pdf")}>PDF</button>
         </div>
 
-        {/* Content area */}
         {tab === "text" ? (
           <div>
             <label className="mb-1.5 block text-xs font-medium text-muted">Contenu du cours</label>
@@ -149,13 +175,7 @@ export default function UploadPage() {
                 </>
               )}
             </div>
-            <input
-              ref={fileRef}
-              type="file"
-              accept=".pdf"
-              className="hidden"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
+            <input ref={fileRef} type="file" accept=".pdf" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           </div>
         )}
 

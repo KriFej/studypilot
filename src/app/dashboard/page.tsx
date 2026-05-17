@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, FileText, Layers, HelpCircle, ArrowRight, Plus, Loader2 } from "lucide-react";
+import { BookOpen, FileText, Layers, HelpCircle, ArrowRight, Plus, Loader2, ArrowUpRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import type { Document } from "@/lib/types";
@@ -50,6 +50,7 @@ export default function DashboardPage() {
   const { userId, email, ready } = useAuth();
   const [docs, setDocs] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
+  const [docLimit, setDocLimit] = useState<{ count: number; limit: number | null } | null>(null);
 
   useEffect(() => {
     if (ready && !userId) router.replace("/login");
@@ -58,16 +59,14 @@ export default function DashboardPage() {
   useEffect(() => {
     if (!userId) return;
     const supabase = createClient();
-    supabase
-      .from("documents")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        setDocs(data ?? []);
-        setLoading(false);
-      });
+    Promise.all([
+      supabase.from("documents").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(20),
+      fetch("/api/user/plan").then((r) => r.json()),
+    ]).then(([{ data }, planData]) => {
+      setDocs(data ?? []);
+      setDocLimit(planData?.docs ?? null);
+      setLoading(false);
+    });
   }, [userId]);
 
   if (!ready || !userId) {
@@ -102,11 +101,26 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="mb-8 grid grid-cols-3 gap-4">
+      <div className="mb-6 grid grid-cols-3 gap-4">
         <StatCard icon={FileText} label="Documents" value={docs.length} color="bg-primary-500" />
         <StatCard icon={Layers} label="Flashcards" value={totalFlashcards} color="bg-accent-500" />
         <StatCard icon={HelpCircle} label="Questions" value={totalQuizzes} color="bg-success-500" />
       </div>
+
+      {/* Banner upgrade si proche de la limite */}
+      {docLimit?.limit !== null && docLimit !== null && docLimit.count >= Math.floor((docLimit.limit ?? 0) * 0.8) && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-3.5">
+          <div>
+            <p className="text-sm font-medium text-amber-300">
+              {docLimit.count}/{docLimit.limit} documents utilisés
+            </p>
+            <p className="text-xs text-amber-400/70">Passe à Pro pour ne jamais perdre tes révisions.</p>
+          </div>
+          <Link href="/pricing" className="flex shrink-0 items-center gap-1.5 rounded-full bg-amber-400 px-4 py-2 text-xs font-semibold text-black hover:opacity-90 transition-all">
+            Passer à Pro <ArrowUpRight size={12} />
+          </Link>
+        </div>
+      )}
 
       {/* Documents list */}
       <div>

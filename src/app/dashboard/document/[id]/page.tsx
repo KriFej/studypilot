@@ -127,8 +127,6 @@ export default function DocumentPage() {
 
   async function sendMessage() {
     if (!chatInput.trim() || chatLoading) return;
-    const apiKey = typeof window !== "undefined" ? localStorage.getItem("sp-openai-key") : null;
-    if (!apiKey) return;
 
     const userMsg = chatInput.trim();
     setChatInput("");
@@ -151,16 +149,18 @@ export default function DocumentPage() {
           documentId: id,
           message: userMsg,
           history: messages.slice(-10).map((m) => ({ role: m.role, content: m.content })),
-          apiKey,
         }),
       });
       const json = await res.json();
+      const reply = res.status === 403
+        ? json.message ?? "Limite atteinte. Passe à Pro pour continuer."
+        : (json.reply ?? "Erreur lors de la réponse.");
       const assistantMsg: ChatMessage = {
         id: crypto.randomUUID(),
         document_id: id,
         user_id: userId!,
         role: "assistant",
-        content: json.reply ?? "Erreur lors de la réponse.",
+        content: reply,
         created_at: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, assistantMsg]);
