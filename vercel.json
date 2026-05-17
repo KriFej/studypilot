@@ -2,15 +2,5 @@
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase_url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "LEMONSQUEEZY_WEBHOOK_SECRET": "@lemonsqueezy_webhook_secret",
-    "NEXT_PUBLIC_LS_PRO_VARIANT_ID": "@ls_pro_variant_id",
-    "NEXT_PUBLIC_LS_MAX_VARIANT_ID": "@ls_max_variant_id",
-    "NEXT_PUBLIC_LS_STORE_SLUG": "@ls_store_slug"
-  }
+  "installCommand": "npm install"
 }
