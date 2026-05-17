@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Dark mode (default) ── */
+:root,
+.dark {
+  color-scheme: dark;
+  --color-bg: #0B0F1A;
+  --color-surface: #111827;
+  --color-card: #1A2236;
+  --color-card-hover: #1E2740;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.14);
+  --color-muted: #9CA3AF;
+  --color-dim: #6B7280;
+  --color-fg: #F9FAFB;
+}
+
+/* ── Light mode ── */
+.light {
+  color-scheme: light;
+  --color-bg: #F8FAFC;
+  --color-surface: #F1F5F9;
+  --color-card: #FFFFFF;
+  --color-card-hover: #F8FAFC;
+  --color-border: #E2E8F0;
+  --color-border-hover: #CBD5E1;
+  --color-muted: #64748B;
+  --color-dim: #94A3B8;
+  --color-fg: #0F172A;
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-feature-settings: "cv11", "ss01";
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: #fff;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Remove arrows from number inputs */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

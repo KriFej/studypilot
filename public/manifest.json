@@ -1,0 +1,16 @@
+{
+  "name": "locpilote",
+  "short_name": "locpilote",
+  "description": "Tableau de bord de rentabilité pour les hôtes Airbnb & Booking.com",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#22c55e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
