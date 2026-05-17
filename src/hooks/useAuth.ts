@@ -70,12 +70,6 @@ export function useAuth() {
       if (data.user && data.user.identities?.length === 0) {
         return { ok: false, error: "Un compte existe déjà avec cet email." };
       }
-      // Notification propriétaire (fire & forget)
-      fetch("/api/notify/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: mail.trim().toLowerCase() }),
-      }).catch(() => {});
       return { ok: true };
     },
     [supabase],

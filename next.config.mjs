@@ -16,7 +16,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com",
       "frame-ancestors 'none'",
     ].join("; "),
   },
@@ -31,6 +31,13 @@ const nextConfig = {
         headers: securityHeaders,
       },
     ];
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // pdf-parse charge des fichiers de test qu'on n'utilise pas
+      config.externals = [...(config.externals || []), "canvas"];
+    }
+    return config;
   },
 };
 

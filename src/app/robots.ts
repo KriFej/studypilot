@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/dashboard", "/login", "/signup", "/auth/", "/success"],
       },
     ],
-    sitemap: "https://locpilote.com/sitemap.xml",
+    sitemap: "https://studypilote.vercel.app/sitemap.xml",
   };
 }

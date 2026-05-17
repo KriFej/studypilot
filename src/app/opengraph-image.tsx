@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "locpilote — tableau de bord de rentabilité Airbnb & Booking";
+export const alt = "StudyPilot — Révise mieux avec l'IA";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -16,12 +16,11 @@ export default function OGImage() {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "center",
-          background: "#0a0a0a",
+          background: "#0a0a12",
           padding: "80px",
           fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
         }}
       >
-        {/* Green accent bar */}
         <div
           style={{
             position: "absolute",
@@ -29,44 +28,31 @@ export default function OGImage() {
             left: 0,
             right: 0,
             height: "4px",
-            background: "linear-gradient(90deg, #16a34a, #22c55e)",
+            background: "linear-gradient(90deg, #3B82F6, #8B5CF6)",
           }}
         />
 
-        {/* Logo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "48px",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "48px" }}>
           <div
             style={{
-              width: "40px",
-              height: "40px",
-              background: "#22c55e",
-              borderRadius: "10px",
+              width: "44px",
+              height: "44px",
+              background: "linear-gradient(135deg, #3B82F6, #8B5CF6)",
+              borderRadius: "12px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "22px",
-              fontWeight: "700",
-              color: "#000",
+              fontSize: "24px",
             }}
           >
-            L
+            📚
           </div>
-          <span style={{ fontSize: "28px", fontWeight: "700", color: "#fff" }}>
-            locpilote
-          </span>
+          <span style={{ fontSize: "28px", fontWeight: "700", color: "#fff" }}>StudyPilot</span>
         </div>
 
-        {/* Headline */}
         <h1
           style={{
-            fontSize: "64px",
+            fontSize: "60px",
             fontWeight: "700",
             color: "#fff",
             lineHeight: 1.1,
@@ -75,43 +61,27 @@ export default function OGImage() {
             letterSpacing: "-0.03em",
           }}
         >
-          Savez-vous vraiment{" "}
-          <span style={{ color: "#22c55e" }}>ce que vous gagnez ?</span>
+          Transforme tes cours en{" "}
+          <span style={{ color: "#8B5CF6" }}>flashcards & quiz</span>
         </h1>
 
-        {/* Subtitle */}
-        <p
-          style={{
-            fontSize: "24px",
-            color: "#888",
-            margin: 0,
-            maxWidth: "700px",
-            lineHeight: 1.5,
-          }}
-        >
-          Le tableau de bord de rentabilité pour les hôtes Airbnb & Booking.com.
+        <p style={{ fontSize: "24px", color: "#888", margin: 0, maxWidth: "700px", lineHeight: 1.5 }}>
+          L'IA génère tes fiches de révision en quelques secondes.
         </p>
 
-        {/* Stats row */}
-        <div
-          style={{
-            display: "flex",
-            gap: "32px",
-            marginTop: "56px",
-          }}
-        >
+        <div style={{ display: "flex", gap: "24px", marginTop: "56px" }}>
           {[
-            { label: "Revenus bruts", value: "4 500 €" },
-            { label: "Dépenses", value: "620 €" },
-            { label: "Bénéfice net", value: "3 195 €", green: true },
+            { label: "Flashcards", value: "Auto", blue: true },
+            { label: "Quiz QCM", value: "Illimités" },
+            { label: "Prof IA", value: "24h/7j", purple: true },
           ].map((s) => (
             <div
               key={s.label}
               style={{
                 display: "flex",
                 flexDirection: "column",
-                background: s.green ? "#22c55e" : "#111",
-                border: "1px solid " + (s.green ? "#22c55e" : "#222"),
+                background: s.blue ? "#3B82F6" : s.purple ? "#8B5CF6" : "#111",
+                border: "1px solid " + (s.blue ? "#3B82F6" : s.purple ? "#8B5CF6" : "#222"),
                 borderRadius: "12px",
                 padding: "16px 24px",
               }}
@@ -119,7 +89,7 @@ export default function OGImage() {
               <span
                 style={{
                   fontSize: "12px",
-                  color: s.green ? "#000" : "#666",
+                  color: s.blue || s.purple ? "rgba(255,255,255,0.7)" : "#666",
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   marginBottom: "4px",
@@ -127,15 +97,7 @@ export default function OGImage() {
               >
                 {s.label}
               </span>
-              <span
-                style={{
-                  fontSize: "28px",
-                  fontWeight: "700",
-                  color: s.green ? "#000" : "#fff",
-                }}
-              >
-                {s.value}
-              </span>
+              <span style={{ fontSize: "28px", fontWeight: "700", color: "#fff" }}>{s.value}</span>
             </div>
           ))}
         </div>
