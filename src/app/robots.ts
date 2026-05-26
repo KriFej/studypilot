@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/dashboard", "/auth/", "/api/"],
       },
     ],
-    sitemap: "https://studypilote.vercel.app/sitemap.xml",
+    sitemap: "https://studypilote-app.vercel.app/sitemap.xml",
   };
 }
