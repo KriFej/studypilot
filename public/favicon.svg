@@ -1,9 +1,18 @@
 <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="5" fill="#000"/>
-  <polygon points="16,2 30,11 30,30 2,30 2,11" fill="#22C55E"/>
-  <rect x="5" y="22" width="6" height="6" fill="#000"/>
-  <rect x="13" y="17" width="6" height="11" fill="#000"/>
-  <rect x="21" y="11" width="6" height="17" fill="#000"/>
-  <polyline points="8,25 16,19 24,13" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <polyline points="2,11 16,2 30,11" fill="none" stroke="#000" stroke-width="2"/>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="url(#g)"/>
+  <rect x="8" y="8" width="10" height="13" rx="1.5" fill="white" opacity="0.9"/>
+  <rect x="10" y="10" width="6" height="1.5" rx="0.75" fill="#3B82F6"/>
+  <rect x="10" y="13" width="6" height="1.5" rx="0.75" fill="#3B82F6"/>
+  <rect x="10" y="16" width="4" height="1.5" rx="0.75" fill="#3B82F6"/>
+  <rect x="14" y="9" width="10" height="13" rx="1.5" fill="white"/>
+  <rect x="16" y="11" width="6" height="1.5" rx="0.75" fill="#8B5CF6"/>
+  <rect x="16" y="14" width="6" height="1.5" rx="0.75" fill="#8B5CF6"/>
+  <rect x="16" y="17" width="4" height="1.5" rx="0.75" fill="#8B5CF6"/>
+  <path d="M8 22 C8 21 9 21 9 21 L23 21 C24 21 24 22 24 22 L24 23 C24 24 23 24 23 24 L9 24 C8 24 8 23 8 23 Z" fill="white" opacity="0.7"/>
 </svg>
